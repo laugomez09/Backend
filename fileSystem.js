@@ -1,4 +1,4 @@
-import { promises as fs } from "fs";
+import { promises as fs, writeFile } from "fs";
 
 class ProductManager {
     constructor() {
@@ -23,12 +23,12 @@ class ProductManager {
 
         this.products.push(newProduct)
 
-        await fs.writeFile(this.path, JSON.stringify(this.products));
+        await fs.writeFile(this.path, JSON.stringify(this.products, null, "\t"));
     }
 
     readProducts = async () => {
-        let lista_de_products = await fs.readFile(this.path, "utf-8")
-        return JSON.parse(lista_de_products)
+        let listOfProducts = await fs.readFile(this.path, "utf-8")
+        return JSON.parse(listOfProducts)
     }
 
     getProducts = async () => {
@@ -43,6 +43,20 @@ class ProductManager {
         }else{
             console.log(Byid.find(product => product.id === id))
         }
+    }
+
+    deleteProduct = async (id) => {
+        let deleteProducts = await this.readProducts();
+        let productFilter = deleteProducts.Filter(product => products.id != id)
+        await fs.writeFile(this.path, JSON.stringify(productFilter));
+        console.log("Se ha eliminado el siguiente producto:\n" +productFilter)
+    }
+
+    updateProducts = async ({id, ...product}) =>{
+        await this.deleteProduct(id)
+        let productOld = await this.readProducts()
+        let productModif = [{id, ...product}, ...productOld]
+        await fs.writeFile(this.path, JSON.stringify(productModif))
     }
 
 }
