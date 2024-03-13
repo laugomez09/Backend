@@ -1,1 +1,92 @@
-[{"title":"Producto 1","description":"Descripción del producto 1","price":20,"thumbnail":"imagen1.jpg","code":"CODE1","stock":10,"id":1},{"title":"Producto 2","description":"Descripción del producto 2","price":30,"thumbnail":"imagen2.jpg","code":"CODE2","stock":15,"id":3}]
+[
+	{
+		"title": "Producto 1",
+		"description": "Descripción del producto 1",
+		"price": 20,
+		"thumbnail": "imagen1.jpg",
+		"code": "CODE1",
+		"stock": 10,
+		"id": 1
+	},
+	{
+		"title": "Producto 2",
+		"description": "Descripción del producto 2",
+		"price": 30,
+		"thumbnail": "imagen2.jpg",
+		"code": "CODE2",
+		"stock": 15,
+		"id": 3
+	},
+	{
+		"title": "Producto 3",
+		"description": "Descripción del producto 3",
+		"price": 40,
+		"thumbnail": "imagen3.jpg",
+		"code": "CODE3",
+		"stock": 20,
+		"id": 5
+	},
+	{
+		"title": "Producto 4",
+		"description": "Descripción del producto 4",
+		"price": 50,
+		"thumbnail": "imagen4.jpg",
+		"code": "CODE4",
+		"stock": 25,
+		"id": 7
+	},
+	{
+		"title": "Producto 5",
+		"description": "Descripción del producto 5",
+		"price": 60,
+		"thumbnail": "imagen5.jpg",
+		"code": "CODE5",
+		"stock": 30,
+		"id": 9
+	},
+	{
+		"title": "Producto 6",
+		"description": "Descripción del producto 6",
+		"price": 70,
+		"thumbnail": "imagen6.jpg",
+		"code": "CODE6",
+		"stock": 35,
+		"id": 11
+	},
+	{
+		"title": "Producto 7",
+		"description": "Descripción del producto 7",
+		"price": 80,
+		"thumbnail": "imagen7.jpg",
+		"code": "CODE7",
+		"stock": 40,
+		"id": 13
+	}
+]	{
+		"title": "Producto 8",
+		"description": "Descripción del producto 8",
+		"price": 90,
+		"thumbnail": "imagen8.jpg",
+		"code": "CODE8",
+		"stock": 45,
+		"id": 15
+	},
+	{
+		"title": "Producto 9",
+		"description": "Descripción del producto 9",
+		"price": 100,
+		"thumbnail": "imagen9.jpg",
+		"code": "CODE9",
+		"stock": 50,
+		"id": 17
+	},
+	{
+		"title": "Producto 10",
+		"description": "Descripción del producto 10",
+		"price": 110,
+		"thumbnail": "imagen10.jpg",
+		"code": "CODE10",
+		"stock": 55,
+		"id": 19
+	}
+]
