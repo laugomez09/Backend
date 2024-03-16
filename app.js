@@ -38,10 +38,10 @@ class ProductManager {
     }
 
     //Funcion para sumar y agregar los id
-    #getId (){
+    #getId() {
         if (this.productos.length === 0) return 1
 
-        return this.productos[this.productos.length -1].id +1
+        return this.productos[this.productos.length - 1].id + 1
     }
 
     //Función para buscar los productos por id
