@@ -56,7 +56,7 @@ router.get('/:cid', async (req, res) => {
             res.status(404).send('Carrito no encontrado');
             return;
         }
-        res.json(foundCart.products);
+        res.json(foundCart); // Devolver el carrito completo
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Error interno del servidor');
@@ -74,7 +74,17 @@ router.post('/:cid/product/:pid', async (req, res) => {
             res.status(404).send('Carrito no encontrado');
             return;
         }
-        foundCart.products.push({ id: productId });
+
+        // Verificar si el producto ya está en el carrito
+        const existingProduct = foundCart.products.find(product => product.id === productId);
+        if (existingProduct) {
+            // Incrementar la cantidad si el producto ya está en el carrito
+            existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+        } else {
+            // Agregar el producto al carrito con cantidad 1 si no está presente
+            foundCart.products.push({ id: productId, quantity: 1 });
+        }
+
         await writeFileAsync('data/carrito.json', carts);
         res.status(200).json(foundCart.products);
     } catch (error) {
