@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
     const { limit, page, query, sort } = req.query
     const productos = await ProductDao.getAllProducts(limit, page, query, sort);
 
-    res.render("products", { productos, user: req.session.user })
+    res.render("products", { productos })
 })
 
 router.get('/carts/:cid', async (req, res) => {

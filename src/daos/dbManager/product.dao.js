@@ -7,7 +7,6 @@ class ProductDao {
             consulta[query.split(":")[0]] = query.split(":")[1]
         }
         return await productModel.paginate(consulta, { limit: limit, page: page, sort: sort == undefined ? {} : { price: Number(sort) } })
-
     }
 
     async getProductById(id) {

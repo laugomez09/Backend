@@ -6,10 +6,9 @@ const router = Router()
 
 router.get('/', async (req, res) => {
     try {
+
         const { limit, page, query, sort } = req.query
         const productos = await ProductDao.getAllProducts(limit, page, query, sort);
-
-
 
         res.json(productos)
 
@@ -21,20 +20,14 @@ router.get('/', async (req, res) => {
 
 router.get('/:pid', async (req, res) => {
     try {
-
         const { pid } = req.params
         const producto = ProductDao.getProductById(pid)
         res.json(producto)
-
     }
     catch (err) {
         res.status(500).json({ error: err })
     }
-
-
-
 })
-
 router.post('/', async (req, res) => {
     try {
         let producto = req.body
@@ -44,9 +37,7 @@ router.post('/', async (req, res) => {
     catch (err) {
         res.status(500).json({ error: err })
     }
-
 })
-
 router.put('/:pid', async (req, res) => {
     try {
         let productoModificado = req.body
