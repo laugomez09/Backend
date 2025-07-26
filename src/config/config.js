@@ -11,25 +11,20 @@ program.parse();
 
 const enviroment = program.opts().mode;
 
-dotenv.config({
-    path:
-        enviroment === "prod"
-            ? "./src/config/.env.production"
-            : "./src/config/.env.development",
-});
+dotenv.config(); // Carga archivo .env desde la raíz del proyecto
 
 const PORT = process.env.PORT || 9090;
 
 export default {
     port: PORT,
     mongoUrl: process.env.MONGO_URL,
-    enviroment: program.opts().mode,
+    enviroment,
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackUrl: process.env.GITHUB_CALLBACK_URL,
     privateKey: process.env.PRIVATE_KEY,
     gmailAccount: process.env.GMAIL_ACCOUNT,
-    gmailAppPassword: process.env.GMAIL_APP_PASSWD,
+    gmailAppPassword: process.env.GMAIL_APP_PASSWORD,
     resetPasswordKey: process.env.RESET_PASSWORD_KEY,
     adminEmail: process.env.ADMIN_EMAIL,
     adminPass: process.env.ADMIN_PASS,

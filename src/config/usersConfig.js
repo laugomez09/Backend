@@ -1,22 +1,30 @@
+// src/config/usersConfig.js
 import passport from "passport";
 import passportLocal from "passport-local";
 import GitHubStrategy from "passport-github2";
 import jwtStrategy from "passport-jwt";
 import userModel from "../services/dao/models/user.model.js";
 import { createHash } from "../utils/bcrypt.js";
-import config from "./config.js";
+import config from "./config.js"; // lee las vars de entorno
 import logger from "../utils/logger.js";
 
 const privateKey = config.privateKey;
 
-//Local Strategy
-const localStrategy = passportLocal.Strategy;
-
+// Local Strategy
+const LocalStrategy = passportLocal.Strategy;
 const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
 
+const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies["jwtCookieToken"];
+    }
+    return token;
+};
+
 const initializePassport = () => {
-    //JWTStrategy with Cookie
+    // JWT Strategy con cookie
     passport.use(
         "jwt",
         new JwtStrategy(
@@ -33,7 +41,8 @@ const initializePassport = () => {
             }
         )
     );
-    //Github Register/Login
+
+    // GitHub Strategy
     passport.use(
         "github",
         new GitHubStrategy(
@@ -44,50 +53,54 @@ const initializePassport = () => {
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    //User existance in DB validation
-                    const user = await userModel.findOne({ email: profile._json.email });
+                    const email = profile._json.email || profile.emails?.[0]?.value;
+
+                    if (!email) {
+                        logger.warn("GitHub user has no public email. Registration aborted.");
+                        return done(null, false);
+                    }
+
+                    const user = await userModel.findOne({ email });
+
                     if (!user) {
                         let newUser = {
-                            first_name: profile._json.name,
+                            first_name: profile._json.name || profile.username,
                             last_name: "",
                             age: 18,
-                            email: profile._json.email,
+                            email,
                             password: "",
                             loggedBy: "GitHub",
                             role: "user",
                         };
                         const result = await userModel.create(newUser);
-                        logger.info(
-                            `User registered with gitHub with email ${newUser.email}`
-                        );
+                        logger.info(`User registered with GitHub: ${email}`);
                         return done(null, result);
                     } else {
-                        //If the user exists in DB
+                        logger.info(`User already exists with GitHub email: ${email}`);
                         return done(null, user);
                     }
                 } catch (error) {
+                    logger.error("Error in GitHub strategy: " + error);
                     return done(error);
                 }
             }
         )
     );
-    //Passport Local
-    //Register
+
+    // Local Register Strategy
     passport.use(
         "register",
-        new localStrategy(
+        new LocalStrategy(
             { passReqToCallback: true, usernameField: "email" },
             async (req, username, password, done) => {
                 const { first_name, last_name, email, age } = req.body;
                 try {
-                    //User in DB validation
                     const user = await userModel.findOne({ email });
                     if (user) {
-                        logger.info("User registered with provided email: " + email);
-                        done(null, false);
+                        logger.info("User already exists with email: " + email);
+                        return done(null, false);
                     }
-                    //Admin role validation
-                    let role;
+                    let role = "user";
                     if (email === config.adminEmail) {
                         role = "admin";
                     }
@@ -110,29 +123,21 @@ const initializePassport = () => {
         )
     );
 
-    //Serialize function
+    // Serializar usuario
     passport.serializeUser((user, done) => {
         done(null, user._id);
     });
-    //Deserialize function
+
+    // Deserializar usuario
     passport.deserializeUser(async (id, done) => {
         try {
-            let user = await userModel.findById(id);
+            const user = await userModel.findById(id);
             done(null, user);
         } catch (error) {
             logger.error("Error deserializing user: " + error);
+            done(error, null);
         }
     });
-};
-
-//CookieExtractor function
-const cookieExtractor = (req) => {
-    let token = null;
-    if (req && req.cookies) {
-        //Request and cookies validation
-        token = req.cookies["jwtCookieToken"];
-    }
-    return token;
 };
 
 export default initializePassport;

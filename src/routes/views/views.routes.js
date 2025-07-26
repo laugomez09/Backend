@@ -170,15 +170,32 @@ viewsRouter.get(
     passportCall("jwt"),
     authorization(["admin", "user", "premium"]),
     async (req, res) => {
-        const { page, limit, sort } = req.query;
-        const products = await productsService.getAll(limit, page, sort);
-        res.render("products", {
-            title: "Products",
-            products,
-            user: req.user,
-        });
+        try {
+            const { page = 1, limit = 8, sort } = req.query;
+
+            // Trae los productos paginados
+            const response = await productsService.getAll(limit, page, sort);//const response = await productsService.getAllProducts(limit, page, sort);
+
+            const { docs: products, totalPages, hasPrevPage, hasNextPage, nextPage, prevPage, page: currentPage } = response;
+
+            res.render("products", {
+                title: "Products",
+                products,       // array con los productos
+                user: req.user, // usuario autenticado
+                totalPages,
+                currentPage,
+                hasNextPage,
+                hasPrevPage,
+                nextPage,
+                prevPage,
+            });
+        } catch (error) {
+            console.error("Error loading products page:", error.message);
+            res.status(500).send("Internal Server Error");
+        }
     }
 );
+
 
 //Purchase successfull
 viewsRouter.get(

@@ -24,10 +24,45 @@ export const githubCallback = async (req, res) => {
     res.redirect("/products");
 };
 
+import { createHash } from "../utils/bcrypt.js";
+
 export const register = async (req, res) => {
-    logger.info("Registering user");
-    res.status(201).send({ status: "success", message: "Success creating user" });
+    try {
+        const { first_name, last_name, email, age, password } = req.body;
+
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send({
+                status: "error",
+                message: "Ya existe un usuario con ese email",
+            });
+        }
+
+        const newUser = {
+            first_name,
+            last_name,
+            email,
+            age,
+            password: createHash(password),
+            role: email === "admin@coder.com" ? "admin" : "user", // o lógica que prefieras
+        };
+
+        await userModel.create(newUser);
+
+        logger.info(`Usuario ${email} registrado exitosamente`);
+        return res.status(201).send({
+            status: "success",
+            message: "Usuario registrado exitosamente",
+        });
+    } catch (error) {
+        logger.error("Error al registrar usuario: " + error.message);
+        return res.status(500).send({
+            status: "error",
+            message: "Error interno del servidor",
+        });
+    }
 };
+
 
 export const login = async (req, res) => {
     const { email, password } = req.body;

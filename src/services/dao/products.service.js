@@ -68,3 +68,5 @@ export default class ProductService {
         return await productModel.findByIdAndDelete(id);
     }
 }
+
+export const productsService = new ProductService(); 

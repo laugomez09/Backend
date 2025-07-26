@@ -1,14 +1,16 @@
-//Modules imports:
+// src/server.js
+
+import dotenv from 'dotenv';
+dotenv.config(); // Cargar variables de entorno primero
+
 import express from "express";
 import handlebars from "express-handlebars";
 import Handlebars from "handlebars";
 
-//Passport imports
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import initializePassport from "./config/usersConfig.js";
 
-//Routers imports:
 import { ProductRouter } from "./routes/api/products.routes.js";
 import { CartsRouter } from "./routes/api/carts.routes.js";
 import { viewsRouter } from "./routes/views/views.routes.js";
@@ -21,7 +23,6 @@ import loggerRouter from "./routes/api/logger.routes.js";
 import fakeUserRouter from "./routes/api/fakeUser.routes.js";
 import paymentsRouter from "./routes/api/payments.routes.js";
 
-//Assets imports:
 import { Server } from "socket.io";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import basePath from "./utils/path.js";
@@ -29,7 +30,6 @@ import { messagesService } from "./services/service.js";
 import swaggerUiExpress from "swagger-ui-express";
 import SwaggerSpecs from "../swaggerSpecs.js";
 
-//Config imports
 import config from "./config/config.js";
 import MongoSingleton from "./config/mongodb_Singleton.js";
 import cors from "cors";
@@ -37,17 +37,19 @@ import compression from "express-compression";
 import { addLogger } from "./utils/logger.js";
 import logger from "./utils/logger.js";
 
-//Server
 const app = express();
 const PORT = config.port;
+
+// Inicializar Passport después de dotenv.config()
+initializePassport();
+
 const httpServer = app.listen(PORT, () => {
-    `Server listening on port ${PORT}`;
+    console.log(`Server listening on port ${PORT}`);
 });
 
-//Midlewares
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-initializePassport();
 app.use(passport.initialize());
 app.use(cors());
 app.use(
@@ -60,14 +62,14 @@ app.use(
 );
 app.use(addLogger);
 
-//Swagger
+// Swagger
 app.use(
     "/api/docs",
     swaggerUiExpress.serve,
     swaggerUiExpress.setup(SwaggerSpecs)
 );
 
-//Handlebars
+// Handlebars
 app.engine(
     "hbs",
     handlebars.engine({
@@ -84,10 +86,10 @@ app.engine(
 app.set("view engine", "hbs");
 app.set("views", `${basePath}/views`);
 
-//Static
+// Static files
 app.use(express.static(`${basePath}/public`));
 
-//Mongoose
+// Mongoose connection
 const mongoInstance = async () => {
     try {
         await MongoSingleton.getInstance();
@@ -97,13 +99,13 @@ const mongoInstance = async () => {
 };
 mongoInstance();
 
-//SocketServer
+// Socket.io server
 const io = new Server(httpServer);
 
-//Cookies
+// Cookies
 app.use(cookieParser("CoderS3cr3tC0d3"));
 
-//Api routers
+// API routers
 app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartsRouter);
 app.use("/api/users", usersRouter);
@@ -115,10 +117,13 @@ app.use("/api/loggerTest", loggerRouter);
 app.use("/api/fakeUser", fakeUserRouter);
 app.use("/api/payments", paymentsRouter);
 
-//ViewRouter
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+// View router
 app.use("/", viewsRouter);
 
-//Socket
+// Socket.io events
 io.on("connection", (socket) => {
     logger.info("New client connected: " + socket.id);
 

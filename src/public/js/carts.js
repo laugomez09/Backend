@@ -65,9 +65,16 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmCartBtn.addEventListener("click", async function (event) {
         const cartId = confirmCartBtn.dataset.cartId;
         try {
+            const token = localStorage.getItem("token");
+
             const response = await fetch(`/api/carts/${cartId}/purchase`, {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`, // 👈 esto es clave
+                    "Content-Type": "application/json"
+                }
             });
+
 
             if (response.ok) {
                 const responseData = await response.json();

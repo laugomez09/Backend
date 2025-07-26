@@ -4,7 +4,7 @@ import __dirname from "../utils/path.js";
 import logger from "../utils/logger.js";
 import { productModel } from "../services/dao/models/product.model.js";
 
-//Transport config
+// Configurar transporte de Gmail
 const transporter = nodemailer.createTransport({
     service: "gmail",
     port: 587,
@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-//Gmail connection verification
-transporter.verify(function (error, success) {
+// Verificar conexión
+transporter.verify((error, success) => {
     if (error) {
         logger.info(error);
     } else {
@@ -23,9 +23,29 @@ transporter.verify(function (error, success) {
     }
 });
 
+// 💡 Función para generar plantilla de email HTML
+function generateEmailHTML(title, contentHTML) {
+    return `
+    <div style="max-width: 600px; margin: auto; padding: 30px; background-color: #ffffff; border-radius: 12px; 
+                box-shadow: 0 0 12px rgba(0,0,0,0.1); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/891/891462.png" alt="Ecommerce Logo" 
+                 style="width: 60px; height: auto; margin-bottom: 10px;" />
+            <h1 style="color: #20c997; font-size: 24px;">${title}</h1>
+        </div>
+        <div style="font-size: 16px; color: #333;">
+            ${contentHTML}
+        </div>
+        <div style="margin-top: 30px; text-align: center; font-size: 14px; color: #666;">
+            <p>Gracias por confiar en nuestro ecommerce 💚</p>
+        </div>
+    </div>
+    `;
+}
+
+// 🛒 Enviar email con ticket de compra
 export const sendEmailWithTicket = async (email, ticket) => {
     try {
-        // Retrieve product details
         const productsDetails = await Promise.all(
             ticket.products.map(async (product) => {
                 const productInfo = await productModel.findById(product.productId);
@@ -37,36 +57,28 @@ export const sendEmailWithTicket = async (email, ticket) => {
             })
         );
 
-        const productCards = productsDetails
-            .map(
-                (product) => `
-      <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-        <h3>${product.title}</h3>
-        <img src="${product.thumbnail}" alt="${product.title}" style="max-width: 100px; height: auto;">
-        <p>Quantity: ${product.quantity}</p>
-      </div>
-    `
-            )
-            .join("");
+        const productCards = productsDetails.map((product) => `
+            <div style="border: 1px solid #ddd; padding: 15px; margin-top: 15px; border-radius: 8px;">
+                <h3 style="margin-bottom: 10px;">${product.title}</h3>
+                <img src="${product.thumbnail}" alt="${product.title}" style="width: 100px; height: auto; border-radius: 6px;" />
+                <p style="margin-top: 10px;">Cantidad: ${product.quantity}</p>
+            </div>
+        `).join("");
 
-        const mailOptions = {
+        const htmlContent = generateEmailHTML("Confirmación de Compra", `
+            <p>🧾 <strong>ID de la Orden:</strong> ${ticket._id}</p>
+            <p><strong>Total:</strong> $${ticket.amount}</p>
+            <h2 style="margin-top: 30px; font-size: 18px;">Productos Comprados:</h2>
+            ${productCards}
+        `);
+
+        await transporter.sendMail({
             from: "Ecommerce - " + config.gmailAccount,
             to: email,
             subject: "Order Confirmation",
-            html: `<div>
-                <h1>Your Order Details</h1>
-                <p>Order ID: ${ticket._id}</p>
-                <p>Total Amount: ${ticket.amount}</p>
-                <p>Purchased Products:</p>
-                ${productCards}
-            </div>
-            <div>
-            <p>Thanks for trusting us, hope to hear from you soon!</p>
-            </div>
-            `,
-        };
+            html: htmlContent
+        });
 
-        await transporter.sendMail(mailOptions);
         logger.info("Order confirmation email sent to: " + email);
     } catch (error) {
         logger.warning("Error sending email:", error);
@@ -74,24 +86,26 @@ export const sendEmailWithTicket = async (email, ticket) => {
     }
 };
 
+// 🔑 Enviar email para resetear contraseña
 export const sendResetPasswordEmail = async (email, token) => {
     try {
-        const mailOptions = {
+        const htmlContent = generateEmailHTML("Reset Your Password", `
+            <p>Haz clic en el botón para restablecer tu contraseña:</p>
+            <a href="https://becoderhousefinalproject-production.up.railway.app/updatepassword?token=${token}"
+               style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #20c997; 
+                      color: #fff; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                Resetear Contraseña
+            </a>
+            <p style="margin-top: 20px; font-size: 14px;">Este enlace es válido por 1 hora y no permite reutilizar contraseñas anteriores.</p>
+        `);
+
+        await transporter.sendMail({
             from: "Reset Password - " + config.gmailAccount,
             to: email,
             subject: "Reset your password",
-            html: `
-  <div 
-    style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; border-radius: 10px; text-align: center;">
-    <h1 style="color: #333;">Reset your password</h1>
-    <p style="margin-top: 20px; font-size: 16px;">Click the link below to reset your password:</p>
-    <a href="https://becoderhousefinalproject-production.up.railway.app/updatepassword?token=${token}" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #000000; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
-    <p style="margin-top: 20px; font-size: 14px; color: #666;">Please note that you cannot use the same password you previously had to reset your password.</p>
-    <p style="font-size: 14px; color: #666;">This password reset link is valid for 1 hour.</p>
-  </div>
-    `,
-        };
-        await transporter.sendMail(mailOptions);
+            html: htmlContent
+        });
+
         logger.info("Reset password email sent to: " + email);
     } catch (error) {
         logger.warning("Error sending email:", error);
@@ -99,29 +113,28 @@ export const sendResetPasswordEmail = async (email, token) => {
     }
 };
 
+// 🗑️ Enviar email por producto eliminado
 export const sendDeleteProductEmail = async (email, product) => {
     try {
-        const mailOptions = {
+        const htmlContent = generateEmailHTML("Producto Eliminado", `
+            <p>El siguiente producto fue eliminado:</p>
+            <ul style="list-style: none; padding: 0;">
+                <li><strong>Título:</strong> ${product.title}</li>
+                <li><strong>Descripción:</strong> ${product.description}</li>
+                <li><strong>Código:</strong> ${product.code}</li>
+                <li><strong>Precio:</strong> $${product.price}</li>
+                <li><strong>Categoría:</strong> ${product.category}</li>
+            </ul>
+            <p style="margin-top: 20px;">Si tienes dudas, no dudes en contactarnos.</p>
+        `);
+
+        await transporter.sendMail({
             from: "Ecommerce - " + config.gmailAccount,
             to: email,
             subject: "Product Deleted",
-            html: `
-        <div>
-          <h1>Your Product Has Been Deleted</h1>
-          <p>The following product has been deleted from our ecommerce platform:</p>
-          <ul>
-            <li>Title: ${product.title}</li>
-            <li>Description: ${product.description}</li>
-            <li>Code: ${product.code}</li>
-            <li>Price: ${product.price}</li>
-            <li>Category: ${product.category}</li>
-          </ul>
-          <p>We apologize for any inconvenience this may cause. If you have any questions or concerns, feel free to contact us.</p>
-          <p>Thank you for your understanding.</p>
-        </div>
-      `,
-        };
-        await transporter.sendMail(mailOptions);
+            html: htmlContent
+        });
+
         logger.info("Delete product email sent to: " + email);
     } catch (error) {
         logger.warning("Error sending email:", error);
@@ -129,23 +142,22 @@ export const sendDeleteProductEmail = async (email, product) => {
     }
 };
 
+// 👤 Enviar email por eliminación de usuario inactivo
 export const sendDeleteInactiveUserEmail = async (email) => {
     try {
-        const mailOptions = {
+        const htmlContent = generateEmailHTML("Cuenta Eliminada por Inactividad", `
+            <p>Tu cuenta ha sido eliminada por inactividad prolongada.</p>
+            <p>Si deseas seguir utilizando nuestra plataforma, por favor regístrate nuevamente.</p>
+            <p>Para cualquier consulta, estamos a disposición.</p>
+        `);
+
+        await transporter.sendMail({
             from: "Ecommerce - " + config.gmailAccount,
             to: email,
             subject: "Account Deletion Due to Inactivity",
-            html: `
-        <div>
-          <h1>Your Account Has Been Deleted Due to Inactivity</h1>
-          <p>We regret to inform you that your account has been deleted from our ecommerce platform due to inactivity.</p>
-          <p>If you wish to continue using our services, please feel free to register again.</p>
-          <p>If you believe this deletion was made in error or if you have any questions, please contact us.</p>
-          <p>Thank you for your understanding.</p>
-        </div>
-      `,
-        };
-        await transporter.sendMail(mailOptions);
+            html: htmlContent
+        });
+
         logger.info("Inactive user deletion email sent to: " + email);
     } catch (error) {
         logger.warning("Error sending email:", error);

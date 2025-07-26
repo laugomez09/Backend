@@ -13,7 +13,12 @@ export default class PaymentsController {
             }
             res.status(200).json({ status: "success", payload: paymentIntent });
         } catch (error) {
-            throw new Error(error.message);
+            console.error("Error en makePurchase:", error);
+            res.status(500).json({
+                status: "error",
+                message: error.message || "Internal Server Error",
+            });
         }
+
     };
 }
