@@ -10,27 +10,39 @@ import {
 
 const router = Router();
 
-//Register
+// Register con control de errores
 router.post(
     "/register",
-    passport.authenticate("register", { session: false }),
+    (req, res, next) => {
+        passport.authenticate("register", { session: false }, (err, user, info) => {
+            if (err) {
+                console.error("Error en passport:", err);
+                return res.status(500).json({ error: "Error interno en el servidor." });
+            }
+            if (!user) {
+                return res.status(400).json({ error: info?.message || "Registro inválido." });
+            }
+            req.user = user; // Paso el usuario al siguiente middleware
+            next();
+        })(req, res, next);
+    },
     register
 );
 
-//Login
+// Login
 router.post("/login", login);
 
-//Logout
+// Logout
 router.post("/logout", logout);
 
-//Github register
+// Github register
 router.get(
     "/github",
-    passport.authenticate("github", { scoope: ["user:email"] }),
+    passport.authenticate("github", { scope: ["user:email"] }),
     githubRegister
 );
 
-//Github callback
+// Github callback
 router.get(
     "/githubcallback",
     passport.authenticate("github", {
