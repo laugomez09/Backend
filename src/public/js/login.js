@@ -13,13 +13,16 @@ form.addEventListener("submit", (e) => {
         headers: {
             "Content-Type": "application/json",
         },
-        credentials: "include", // Esto permite guardar la cookie del JWT
     }).then((result) => {
         if (result.status === 200) {
+            result.json();
+            console.log("Generated cookies:");
+            console.log(document.cookie);
             alert("Success login");
-            window.location.replace("/products"); // Redirigimos
+            window.location.replace("/products");
         } else if (result.status === 401) {
-            alert("Login error, check credentials");
+            console.log(result);
+            alert("Login error check credentials");
         }
     });
 });
