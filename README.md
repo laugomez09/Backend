@@ -1,123 +1,183 @@
-### README - Español
+Proyecto Final del Curso de Programación Backend - CoderHouse
+Este proyecto es el trabajo final del curso de Programación Backend de CoderHouse, donde se desarrolló un ecommerce completo desde cero utilizando Express, Node.js y Handlebars.
 
-# Proyecto Final del Curso de Programación Backend - CoderHouse
+Descripción del Proyecto
+Se creó un ecommerce que permite a los usuarios navegar por distintas categorías de productos, agregar productos al carrito de compras, realizar pedidos y efectuar pagos.
 
-Este es el proyecto final del curso de Programación Backend de CoderHouse, donde se desarrolló un ecommerce desde cero utilizando Express, Node.js y Handlebars.
+El frontend está implementado con el motor de plantillas Handlebars.
 
-## Descripción del Proyecto
+El backend está desarrollado con Express y Node.js.
 
-El proyecto consiste en la creación de un ecommerce completo, que permite a los usuarios navegar por diferentes categorías de productos, agregar productos al carrito de compras, realizar pedidos y realizar pagos. El frontend está implementado utilizando el motor de plantillas Handlebars, mientras que el backend está construido con Express y Node.js.
+Características Principales
+Navegación de productos: Explorar categorías y ver detalles de productos.
 
-## Características Principales
+Carrito de compras: Agregar productos, ver resumen y proceder al pago.
 
-- **Navegación de Productos:** Los usuarios pueden explorar diferentes categorías de productos y ver los detalles de cada producto.
-- **Carrito de Compras:** Los usuarios pueden agregar productos al carrito de compras, ver el resumen del carrito y proceder al proceso de pago.
-- **Proceso de Pedido:** Los usuarios pueden completar el proceso de pedido ingresando su información de envío y método de pago.
-- **Integración de Pago:** El proyecto cuenta con integración de pago utilizando una pasarela de pago externa (se debe proporcionar más información sobre la pasarela de pago utilizada).
+Proceso de pedido: Completar el pedido con información de envío y método de pago.
 
-## Instalación
+Integración de pago: Usa una pasarela externa para el procesamiento de pagos (se debe especificar cuál).
 
-1.  Clona este repositorio en tu máquina local.
-2.  Instala las dependencias del proyecto utilizando npm:
+Envío de correos:
 
-```
+Notificación a usuarios premium cuando sus productos son eliminados.
+
+Aviso a usuarios borrados por inactividad.
+
+Confirmación de compra con todos los detalles.
+
+Sistema seguro de reseteo de contraseña mediante email con verificación.
+
+Instalación
+Clonar este repositorio localmente.
+
+Instalar dependencias:
+
+bash
+Copiar
+Editar
 npm install
-```
+Crear un archivo .env en la carpeta config con las variables de entorno siguiendo el archivo .env.example.
 
-1.  Crea un archivo **.env** en la carpeta **config** dentro de la raíz del proyecto y configura las variables de entorno necesarias según el archivo **.env.example**.
-2.  Inicia la aplicación:
+Iniciar la aplicación:
 
-```
+bash
+Copiar
+Editar
 npm start
-```
+Roles de Usuario y Credenciales
+Admin:
 
-## Roles de Usuario y Credenciales
+Puede crear, eliminar y modificar productos.
 
-Existen distintos roles de usuario en la aplicación:
+Gestionar usuarios (cambiar rol a premium y eliminarlos).
 
-- **Admin:** Puede crear, eliminar y modificar productos, gestionar usuarios (cambiar su rol a premium y borrarlos), y gestionar carritos y tickets. Las credenciales de administrador son:
+Gestionar carritos y tickets.
 
-  - Email: adminCoder@coder.com
-  - Contraseña: 12345qwert
+Credenciales:
 
-- **User:** Puede realizar un proceso de compra completo.
-- **Premium:** Además de las funciones de usuario, puede crear productos y editar y borrar sus propios productos.
+Email: adminCoder@coder.com
 
-## Funcionalidades de Envío de Correos
+Contraseña: 12345qwert
 
-El ecommerce utiliza NodeMailer para el envío de correos en las siguientes situaciones:
+User:
 
-- Se envía un email a un usuario premium cuando se elimina uno de sus productos.
-- Se envía un email a los usuarios borrados por inactividad.
-- Se envía un email al finalizar una compra con toda la información de la misma.
-- El ecommerce dispone de un sistema de reseteado de contraseña protegido que funciona a través del envío de email con verificación.
+Puede realizar un proceso completo de compra.
 
-## Pruebas y Documentación
+Premium:
 
-Se han realizado pruebas de rendimiento y tests unitarios y de integración mediante mocha, chai y supertest. Además, la documentación de la API está disponible en Swagger en el endpoint **/api/docs**, donde se pueden probar todos los endpoints (se requieren credenciales de administrador para muchos de ellos).
+Funciones de usuario.
 
-## Licencia
+Puede crear, editar y eliminar sus propios productos.
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+Funcionalidades de Envío de Correos
+Se envía email cuando un producto de un usuario premium es eliminado.
 
-### README - English
+Se envía email cuando un usuario es eliminado por inactividad.
 
-# Final Project of Backend Programming Course - CoderHouse
+Se envía email al finalizar una compra con todos los datos.
 
-This is the final project of the CoderHouse Backend Programming course, where an ecommerce was developed from scratch using Express, Node.js, and Handlebars.
+Pruebas y Documentación
+Se realizaron pruebas de rendimiento, unitarias e integración con Mocha, Chai y Supertest.
 
-## Project Description
+La documentación de la API está disponible en Swagger en el endpoint:
 
-The project consists of creating a complete ecommerce, which allows users to navigate through different product categories, add products to the shopping cart, place orders, and make payments. The frontend is implemented using the Handlebars template engine, while the backend is built with Express and Node.js.
+bash
+Copiar
+Editar
+/api/docs
+(Para muchos endpoints se requieren credenciales de administrador).
 
-## Key Features
+Licencia
+Este proyecto está bajo la Licencia MIT. Para más detalles, consultar el archivo LICENSE.
 
-- **Product Navigation:** Users can browse through different product categories and view the details of each product.
-- **Shopping Cart:** Users can add products to the shopping cart, view the cart summary, and proceed to the checkout process.
-- **Order Process:** Users can complete the order process by entering their shipping information and payment method.
-- **Payment Integration:** The project includes payment integration using an external payment gateway (more information about the payment gateway used should be provided).
+Final Project of Backend Programming Course - CoderHouse
+This is the final project of the CoderHouse Backend Programming course, where a full ecommerce was developed from scratch using Express, Node.js, and Handlebars.
 
-## Installation
+Project Description
+The project consists of a complete ecommerce that allows users to browse different product categories, add products to the shopping cart, place orders, and make payments.
 
-1.  Clone this repository to your local machine.
-2.  Install the project dependencies using npm:
+The frontend is implemented with Handlebars template engine.
 
-```
+The backend is built with Express and Node.js.
+
+Key Features
+Product Navigation: Browse categories and view product details.
+
+Shopping Cart: Add products, view summary, and checkout.
+
+Order Process: Complete order with shipping and payment info.
+
+Payment Integration: Uses an external payment gateway (please specify).
+
+Email Notifications:
+
+Sent to premium users when their products are deleted.
+
+Sent to users deleted due to inactivity.
+
+Sent upon purchase completion with all relevant information.
+
+Secure password reset system via email verification.
+
+Installation
+Clone the repository locally.
+
+Install dependencies:
+
+bash
+Copiar
+Editar
 npm install
-```
+Create a .env file inside the config folder with the environment variables according to .env.example.
 
-1.  Create a **.env** file in the **config** folder at the root of the project and configure the necessary environment variables according to the **.env.example** file.
-2.  Start the application:
+Start the app:
 
-```
+bash
+Copiar
+Editar
 npm start
-```
+User Roles and Credentials
+Admin:
 
-## User Roles and Credentials
+Can create, delete, and modify products.
 
-There are different user roles in the application:
+Manage users (change role to premium and delete users).
 
-- **Admin:** Can create, delete, and modify products, manage users (change their role to premium and delete them), and manage carts and tickets. The administrator credentials are:
+Manage carts and tickets.
 
-  - Email: adminCoder@coder.com
-  - Password: 12345qwert
+Credentials:
 
-- **User:** Can complete a full purchase process.
-- **Premium:** In addition to user functions, can create products and edit and delete their own products.
+Email: adminCoder@coder.com
 
-## Email Sending Features
+Password: 12345qwert
 
-The ecommerce uses NodeMailer for email sending in the following situations:
+User:
 
-- An email is sent to a premium user when one of their products is deleted.
-- An email is sent to users deleted due to inactivity.
-- An email is sent when completing a purchase with all the relevant information.
-- The ecommerce has a protected password reset system that works through email verification.
+Can complete full purchase flow.
 
-## Testing and Documentation
+Premium:
 
-Performance tests and unit and integration tests have been conducted using Mocha, Chai, and Supertest. Additionally, the API documentation is available on Swagger at the **/api/docs** endpoint, where all endpoints can be tested (administrator credentials are required for many of them).
+User functionalities.
 
-## License
+Can create, edit, and delete own products.
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+Email Features
+Email sent when a premium user’s product is deleted.
+
+Email sent when users are deleted for inactivity.
+
+Email sent upon purchase completion.
+
+Testing and Documentation
+Performance, unit, and integration tests done with Mocha, Chai, and Supertest.
+
+API documentation available in Swagger at:
+
+bash
+Copiar
+Editar
+/api/docs
+(Admin credentials needed for many endpoints).
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
