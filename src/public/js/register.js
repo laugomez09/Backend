@@ -15,11 +15,23 @@ form.addEventListener("submit", (e) => {
         },
     }).then((result) => {
         if (result.status === 201) {
-            result.json();
-            alert("Success creating user");
-            window.location.replace("/login");
+            Swal.fire({
+                icon: "success",
+                title: "¡Registro exitoso!",
+                text: "Ahora podés iniciar sesión.",
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+            setTimeout(() => {
+                window.location.replace("/login");
+            }, 2000);
         } else {
-            alert("Error creating user");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo crear el usuario.",
+            });
         }
     });
 });
