@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch(`/api/carts/${cartId}/purchase`, {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${token}`, // 👈 esto es clave
+                    "Authorization": `Bearer ${token}`, 
                     "Content-Type": "application/json"
                 }
             });

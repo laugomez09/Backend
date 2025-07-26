@@ -16,13 +16,23 @@ form.addEventListener("submit", (e) => {
     }).then((result) => {
         if (result.status === 200) {
             result.json();
-            console.log("Generated cookies:");
-            console.log(document.cookie);
-            alert("Success login");
-            window.location.replace("/products");
+            Swal.fire({
+                icon: "success",
+                title: "¡Login exitoso!",
+                text: "Redirigiendo a productos...",
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            });
+            setTimeout(() => {
+                window.location.replace("/products");
+            }, 2000);
         } else if (result.status === 401) {
-            console.log(result);
-            alert("Login error check credentials");
+            Swal.fire({
+                icon: "error",
+                title: "Error de login",
+                text: "Credenciales incorrectas. Por favor revisá los datos.",
+            });
         }
     });
 });
