@@ -39,23 +39,18 @@ import logger from "./utils/logger.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Configurar __dirname para ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = config.port;
 
-// Inicializar Passport después de dotenv.config()
-initializePassport();
-
-const httpServer = app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
-
-// Middlewares
+// Middlewares básicos
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser("CoderS3cr3tC0d3"));
 app.use(passport.initialize());
 app.use(cors());
 app.use(
@@ -68,14 +63,10 @@ app.use(
 );
 app.use(addLogger);
 
-// Swagger
-app.use(
-    "/api/docs",
-    swaggerUiExpress.serve,
-    swaggerUiExpress.setup(SwaggerSpecs)
-);
+// Servir archivos estáticos (solo UNA vez)
+app.use(express.static(path.join(__dirname, "public")));
 
-// Handlebars
+// Configuración Handlebars
 app.engine(
     "hbs",
     handlebars.engine({
@@ -92,26 +83,13 @@ app.engine(
 app.set("view engine", "hbs");
 app.set("views", `${basePath}/views`);
 
-// Static files
-app.use(express.static(`${basePath}/public`));
+// Swagger
+app.use("/api/docs", swaggerUiExpress.serve, swaggerUiExpress.setup(SwaggerSpecs));
 
-// Mongoose connection
-const mongoInstance = async () => {
-    try {
-        await MongoSingleton.getInstance();
-    } catch (error) {
-        logger.error(error);
-    }
-};
-mongoInstance();
+// Inicializar Passport después de dotenv.config()
+initializePassport();
 
-// Socket.io server
-const io = new Server(httpServer);
-
-// Cookies
-app.use(cookieParser("CoderS3cr3tC0d3"));
-
-// API routers
+// Rutas API
 app.use("/api/products", ProductRouter);
 app.use("/api/carts", CartsRouter);
 app.use("/api/users", usersRouter);
@@ -123,20 +101,36 @@ app.use("/api/loggerTest", loggerRouter);
 app.use("/api/fakeUser", fakeUserRouter);
 app.use("/api/payments", paymentsRouter);
 
-
-// View router
+// Rutas vistas
 app.use("/", viewsRouter);
 
-// Socket.io events
-io.on("connection", (socket) => {
-    logger.info("New client connected: " + socket.id);
+// Conectar a MongoDB e iniciar servidor
+const startServer = async () => {
+    try {
+        await MongoSingleton.getInstance();
 
-    socket.on("message", async (data) => {
-        logger.info(data);
-        await messagesService.create(data);
-    });
+        const httpServer = app.listen(PORT, () => {
+            console.log(`Server listening on port ${PORT}`);
+        });
 
-    socket.on("disconnect", () => {
-        logger.info("Client disconnected: " + socket.id);
-    });
-});
+        // Socket.io
+        const io = new Server(httpServer);
+
+        io.on("connection", (socket) => {
+            logger.info("New client connected: " + socket.id);
+
+            socket.on("message", async (data) => {
+                logger.info(data);
+                await messagesService.create(data);
+            });
+
+            socket.on("disconnect", () => {
+                logger.info("Client disconnected: " + socket.id);
+            });
+        });
+    } catch (error) {
+        logger.error("Error starting server:", error);
+    }
+};
+
+startServer();

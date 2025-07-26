@@ -13,9 +13,11 @@ import {
 const viewsRouter = Router();
 
 //Basic redirection
+//Redirige a /login por defecto
 viewsRouter.get("/", (req, res) => {
-    res.redirect("/register");
+    res.redirect("/login");
 });
+
 
 //ADMIN VIEWS
 
