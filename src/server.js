@@ -37,6 +37,12 @@ import compression from "express-compression";
 import { addLogger } from "./utils/logger.js";
 import logger from "./utils/logger.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 const app = express();
 const PORT = config.port;
 
@@ -116,8 +122,6 @@ app.use("/api/tickets", ticketRouter);
 app.use("/api/loggerTest", loggerRouter);
 app.use("/api/fakeUser", fakeUserRouter);
 app.use("/api/payments", paymentsRouter);
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 // View router
