@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Proyecto Final del Curso de Programación Backend - CoderHouse
 Este proyecto es el trabajo final del curso de Programación Backend de CoderHouse, donde se desarrolló un ecommerce completo desde cero utilizando Express, Node.js y Handlebars.
 
@@ -181,3 +182,37 @@ Editar
 
 License
 This project is licensed under the MIT License. See the LICENSE file for details.
+=======
+# 🛒 Proyecto Final - Ecommerce Backend | CoderHouse
+
+Este es el proyecto final del curso de **Programación Backend** de CoderHouse. Consiste en el desarrollo completo de un backend para un ecommerce, utilizando tecnologías modernas como **Node.js**, **Express**, **MongoDB**, **Passport**, **JWT**, entre otras.
+
+---
+
+## 🚀 Tecnologías Utilizadas
+
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB + Mongoose](https://mongoosejs.com/)
+- [Handlebars](https://handlebarsjs.com/)
+- [Passport.js](https://www.passportjs.org/)
+- [JWT (JSON Web Tokens)](https://jwt.io/)
+- [GitHub Auth](https://docs.github.com/es/developers/apps/building-oauth-apps)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+- [SweetAlert2](https://sweetalert2.github.io/)
+- [Railway](https://railway.app/) para el deployment
+
+---
+
+## ⚙️ Instalación
+
+1. **Clonar el repositorio:**
+
+```bash
+git clone https://github.com/laugomez09/Backend.git
+cd Backend
+
+##  Pagina subida en:
+
+1. **https://backend-ecommerce-ylku.onrender.com/login**
+>>>>>>> 886924b (Arreglando el error del registrer)
